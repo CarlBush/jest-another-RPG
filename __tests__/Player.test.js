@@ -62,3 +62,47 @@ test("subtracts from player's health", () => {
     player.reduceHealth(99999);
     expect(player.health).toBe(0)
 });
+
+test("get player's attack value", () => {
+    const player = new Player("Dave");
+    player.strength = 10;
+
+    expect(player.getAttackValue()).toBeGreaterThanOrEqual(5);
+    expect(player.getAttackValue()).toBeLessThanOrEqual(15);
+});
+
+test("add a potion to the inventory", () => {
+    const player = new Player("Dave");
+    const oldCount = player.inventory.length;
+
+    player.addPotion(new Potion());
+
+    expect(player.inventory.length).toBeGreaterThan(oldCount);
+});
+
+test("uses a potion from inventory", () => {
+    const player = new Player("Dave");
+    player.inventory = [new Potion(), new Potion(), new Potion()];
+    const oldCount = player.inventory.length;
+
+    player.usePotion(1);
+
+    expect(player.inventory.length).toBeLessThan(oldCount);
+});
+
+//The .splice() method removes items from an array and returns the removed item(s) as a new array.
+Player.prototype.usePotion = function (index) {
+    const potion = this.getInventory().splice(index, 1)[0];
+
+    switch(potion.name){
+        case "agility":
+            this.agility += potion.value;
+            break;
+        case "health":
+            this.health += potion.value;
+            break;
+        case "strength":
+            this.strength += potion.value;
+            break;
+    }
+};
